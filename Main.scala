@@ -46,9 +46,13 @@ object Main {
       1.0 / numPoints * (b - a) * sumValues(f, a, b, numPoints)
       
     def integralPar(f: (Double) => Double, a: Double, b: Double, numPoints: Int) = {
+      val middle = a + (b - a) / 2.0
+      val halfPoints = numPoints / 2
+      
       val (sum1, sum2) = parallel(
-          sumValues(f, a, b - (b - a) / 2, numPoints / 2),
-          sumValues(f, a + (b - a) / 2, b, numPoints / 2))
+          sumValues(f, a, middle, halfPoints),
+          sumValues(f, middle, b, halfPoints))
+          
       1.0 / numPoints * (b - a) * (sum1 + sum2)
     }
     
@@ -75,9 +79,9 @@ object Main {
       Key.verbose -> true
     ) withWarmer(new Warmer.Default)
     
-    val f = (x: Double) => x
-    val a = 0
-    val b = 1
+    val f = (x: Double) => Math.sin(Math.cos(x))
+    val a = 2
+    val b = 5
     val numPoints = 100000
     
     val seqtime = standardConfig measure {
